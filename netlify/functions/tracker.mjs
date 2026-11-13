@@ -156,7 +156,7 @@ async function sendSubscribe({ click, clickId, userId, eventTime }) {
 
   const body = {
     data: [{
-      event_name: "Subscribe",
+      event_name: env("META_EVENT_NAME") || "Subscribe",
       event_time: eventTime ?? Math.floor(Date.now() / 1000),
       event_id: `sub-${clickId}`,
       action_source: "website",

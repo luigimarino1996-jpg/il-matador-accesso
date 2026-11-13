@@ -36,5 +36,6 @@ Toglila quando hai finito.
 - Il link d'invito è con approvazione, dura 7 giorni e vale per una sola persona: il bot approva da solo la richiesta.
 - Chi esce e rientra non genera un secondo evento.
 - Chi entra con un link non creato dalla landing non viene inviato a Meta.
+- `META_EVENT_NAME` cambia l'evento inviato (predefinito `Subscribe`, es. `Lead`).
 - Variabili facoltative: `TELEGRAM_CHANNEL_ID` (per forzare un canale preciso),
   `META_API_VERSION` (predefinita `v24.0`).

@@ -112,11 +112,14 @@ test("join request from a landing link → approved, Subscribe sent, link retire
       invite_link: { name: linkName, invite_link: "https://t.me/+abc" },
     },
   });
+  process.env.META_EVENT_NAME = "Lead";
   await hook(request(20, name));
+  delete process.env.META_EVENT_NAME;
   const approve = calls.find((c) => c.url.includes("approveChatJoinRequest")).body;
   assert.deepEqual(approve, { chat_id: -100123, user_id: 20 });
   assert.equal(metaCalls().length, 1);
   assert.equal(metaCalls()[0].body.data[0].user_data.fbp, "fb.1.5.6");
+  assert.equal(metaCalls()[0].body.data[0].event_name, "Lead");
   assert.equal(calls.find((c) => c.url.includes("revokeChatInviteLink")).body.invite_link, "https://t.me/+abc");
 
   // The chat_member update that follows an approval must not send a second event.
