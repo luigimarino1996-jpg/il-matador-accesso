@@ -57,8 +57,8 @@ async function join(req, context) {
     invite = await tg("createChatInviteLink", {
       chat_id: channel.id,
       name: clickId,
-      member_limit: 1,
-      expire_date: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
+      creates_join_request: true,
+      expire_date: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60,
     });
   } catch (err) {
     console.error(err);
@@ -84,6 +84,7 @@ async function telegram(req) {
   const update = await req.json().catch(() => ({}));
   try {
     if (update.my_chat_member) await rememberChannel(update.my_chat_member);
+    if (update.chat_join_request) await handleJoinRequest(update.chat_join_request);
     if (update.chat_member) await handleJoin(update.chat_member);
   } catch (err) {
     console.error(err); // still answer 200, or Telegram retries the same update forever
@@ -98,23 +99,48 @@ async function rememberChannel(event) {
   await db().setJSON("config/channel", { id: event.chat.id, title: event.chat.title ?? "" });
 }
 
+const isClickId = (name) => /^[0-9a-f]{24}$/.test(name ?? "");
+
+// Join request through a landing link: approve it, send Subscribe, retire the link.
+async function handleJoinRequest(event) {
+  const channel = await getChannel();
+  if (!channel || String(event.chat.id) !== String(channel.id)) return;
+
+  const clickId = event.invite_link?.name;
+  if (!isClickId(clickId)) return; // not a landing link: left for manual approval
+
+  const userId = event.from.id;
+  await tg("approveChatJoinRequest", { chat_id: event.chat.id, user_id: userId });
+  await recordSubscribe({ clickId, userId, eventTime: event.date });
+
+  // One person per link, so every join stays tied to its own click.
+  await tg("revokeChatInviteLink", {
+    chat_id: event.chat.id,
+    invite_link: event.invite_link.invite_link,
+  }).catch((err) => console.error(err));
+}
+
+// Direct joins (no approval step). Approved requests are already handled above.
 async function handleJoin(event) {
   const channel = await getChannel();
   if (!channel || String(event.chat.id) !== String(channel.id)) return;
+  if (event.via_join_request) return;
 
   const wasOutside = ["left", "kicked"].includes(event.old_chat_member?.status);
   const isInside = ["member", "administrator", "creator"].includes(event.new_chat_member?.status);
   if (!wasOutside || !isInside) return;
 
   const clickId = event.invite_link?.name;
-  if (!/^[0-9a-f]{24}$/.test(clickId ?? "")) return; // did not come from the landing
+  if (!isClickId(clickId)) return; // did not come from the landing
+  await recordSubscribe({ clickId, userId: event.new_chat_member.user.id, eventTime: event.date });
+}
+
+async function recordSubscribe({ clickId, userId, eventTime }) {
   const click = await db().get(`click/${clickId}`, { type: "json" });
   if (!click) return;
-
-  const userId = event.new_chat_member.user.id;
   if (await db().get(`member/${userId}`, { type: "json" })) return; // re-join: already sent
 
-  await sendSubscribe({ click, clickId, userId, eventTime: event.date });
+  await sendSubscribe({ click, clickId, userId, eventTime });
   await db().setJSON(`member/${userId}`, { clickId, ts: new Date().toISOString() });
 }
 
@@ -159,7 +185,7 @@ async function setup(req) {
     await tg("setWebhook", {
       url: `${origin}/api/telegram`,
       secret_token: webhookSecret(),
-      allowed_updates: ["chat_member", "my_chat_member"],
+      allowed_updates: ["chat_member", "my_chat_member", "chat_join_request"],
     });
     const me = await tg("getMe");
     const channel = await getChannel();

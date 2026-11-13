@@ -51,7 +51,7 @@ test("setup before the bot is in the channel asks to add it", async () => {
   assert.match(out.prossimoPasso, /@mybot/);
   const hookCall = calls.find((c) => c.url.includes("setWebhook")).body;
   assert.equal(hookCall.url, "https://site.test/api/telegram");
-  assert.deepEqual(hookCall.allowed_updates, ["chat_member", "my_chat_member"]);
+  assert.deepEqual(hookCall.allowed_updates, ["chat_member", "my_chat_member", "chat_join_request"]);
 });
 
 test("join before the channel is known fails cleanly", async () => {
@@ -74,7 +74,10 @@ test("click → join → Subscribe sent to Meta once", async () => {
   assert.equal((await (await handler(new Request("https://site.test/api/config"))).json()).pixelId, "999");
   const invite = calls.find((c) => c.url.includes("createChatInviteLink")).body;
   assert.equal(invite.chat_id, -100123);
-  assert.equal(invite.member_limit, 1);
+  assert.equal(invite.creates_join_request, true);
+  assert.equal(invite.member_limit, undefined);
+  const days = (invite.expire_date - Date.now() / 1000) / 86400;
+  assert.ok(days > 6.99 && days <= 7);
   assert.ok(invite.name.length <= 32);
 
   await hook(joinUpdate(7, invite.name));
@@ -97,4 +100,32 @@ test("joins not from the landing, other chats, wrong secret → nothing sent", a
   await hook(joinUpdate(9, name, -100555));
   assert.equal((await hook(joinUpdate(10, name), "wrong")).status, 403);
   assert.equal(metaCalls().length, 1);
+});
+
+test("join request from a landing link → approved, Subscribe sent, link retired", async () => {
+  calls.length = 0;
+  await post("/api/join", { fbp: "fb.1.5.6" });
+  const name = calls.find((c) => c.url.includes("createChatInviteLink")).body.name;
+  const request = (userId, linkName) => ({
+    chat_join_request: {
+      chat: { id: -100123, type: "channel" }, from: { id: userId }, date: 1794000500,
+      invite_link: { name: linkName, invite_link: "https://t.me/+abc" },
+    },
+  });
+  await hook(request(20, name));
+  const approve = calls.find((c) => c.url.includes("approveChatJoinRequest")).body;
+  assert.deepEqual(approve, { chat_id: -100123, user_id: 20 });
+  assert.equal(metaCalls().length, 1);
+  assert.equal(metaCalls()[0].body.data[0].user_data.fbp, "fb.1.5.6");
+  assert.equal(calls.find((c) => c.url.includes("revokeChatInviteLink")).body.invite_link, "https://t.me/+abc");
+
+  // The chat_member update that follows an approval must not send a second event.
+  const follow = joinUpdate(20, name); follow.chat_member.via_join_request = true;
+  await hook(follow);
+  assert.equal(metaCalls().length, 1);
+
+  // Requests through links not created by the landing are left alone.
+  calls.length = 0;
+  await hook(request(21, "Link manuale"));
+  assert.equal(calls.length, 0);
 });
