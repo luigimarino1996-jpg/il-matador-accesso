@@ -128,4 +128,8 @@ test("join request from a landing link → approved, Subscribe sent, link retire
   calls.length = 0;
   await hook(request(21, "Link manuale"));
   assert.equal(calls.length, 0);
+
+  // Same for links created by another project's bot (valid format, unknown click).
+  await hook(request(22, "0123456789abcdef01234567"));
+  assert.equal(calls.length, 0);
 });

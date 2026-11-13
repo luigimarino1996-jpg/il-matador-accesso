@@ -109,6 +109,9 @@ async function handleJoinRequest(event) {
   const clickId = event.invite_link?.name;
   if (!isClickId(clickId)) return; // not a landing link: left for manual approval
 
+  // Only links created by this project: another bot in the same channel handles its own.
+  if (!(await db().get(`click/${clickId}`, { type: "json" }))) return;
+
   const userId = event.from.id;
   await tg("approveChatJoinRequest", { chat_id: event.chat.id, user_id: userId });
   await recordSubscribe({ clickId, userId, eventTime: event.date });
