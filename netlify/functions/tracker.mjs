@@ -104,7 +104,7 @@ const log = (...parts) => console.log("[tracker]", ...parts);
 
 const isClickId = (name) => /^[0-9a-f]{24}$/.test(name ?? "");
 
-// Join request through a landing link: approve it, send Subscribe, retire the link.
+// Join request through a landing link: approve it and send the event. The link stays valid for 7 days.
 async function handleJoinRequest(event) {
   const channel = await getChannel();
   if (!channel || String(event.chat.id) !== String(channel.id)) return;
@@ -131,12 +131,6 @@ async function handleJoinRequest(event) {
     log(`richiesta di ${userId} già approvata da altri (link ${clickId}), invio comunque l'evento`);
   }
   await recordSubscribe({ clickId, userId, eventTime: event.date });
-
-  // One person per link, so every join stays tied to its own click.
-  await tg("revokeChatInviteLink", {
-    chat_id: event.chat.id,
-    invite_link: event.invite_link.invite_link,
-  }).catch((err) => console.error(err));
 }
 
 // Direct joins (no approval step). Approved requests are already handled above.

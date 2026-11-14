@@ -106,7 +106,7 @@ test("joins not from the landing, other chats, wrong secret → nothing sent", a
   assert.equal(metaCalls().length, 2);
 });
 
-test("join request from a landing link → approved, Subscribe sent, link retired", async () => {
+test("join request from a landing link → approved, event sent, link kept", async () => {
   calls.length = 0;
   await post("/api/join", { fbp: "fb.1.5.6" });
   const name = calls.find((c) => c.url.includes("createChatInviteLink")).body.name;
@@ -124,7 +124,7 @@ test("join request from a landing link → approved, Subscribe sent, link retire
   assert.equal(metaCalls().length, 1);
   assert.equal(metaCalls()[0].body.data[0].user_data.fbp, "fb.1.5.6");
   assert.equal(metaCalls()[0].body.data[0].event_name, "Lead");
-  assert.equal(calls.find((c) => c.url.includes("revokeChatInviteLink")).body.invite_link, "https://t.me/+abc");
+  assert.equal(calls.some((c) => c.url.includes("revokeChatInviteLink")), false);
 
   // The chat_member update that follows an approval must not send a second event.
   const follow = joinUpdate(20, name); follow.chat_member.via_join_request = true;
