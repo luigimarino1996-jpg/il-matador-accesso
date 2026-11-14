@@ -83,6 +83,7 @@ async function telegram(req) {
   }
   const update = await req.json().catch(() => ({}));
   try {
+    log("notifica", describe(update));
     if (update.my_chat_member) await rememberChannel(update.my_chat_member);
     if (update.chat_join_request) await handleJoinRequest(update.chat_join_request);
     if (update.chat_member) await handleJoin(update.chat_member);
@@ -90,6 +91,21 @@ async function telegram(req) {
     console.error(err); // still answer 200, or Telegram retries the same update forever
   }
   return json({ ok: true });
+}
+
+// Short summary of a Telegram update for the logs (no message content).
+function describe(update) {
+  const kind = Object.keys(update).find((k) => k !== "update_id") ?? "?";
+  const e = update[kind] ?? {};
+  return JSON.stringify({
+    tipo: kind,
+    chat: e.chat?.id,
+    utente: e.from?.id ?? e.new_chat_member?.user?.id,
+    da: e.old_chat_member?.status,
+    a: e.new_chat_member?.status,
+    link: e.invite_link?.name ?? (e.invite_link ? "(senza nome)" : undefined),
+    via_richiesta: e.via_join_request,
+  });
 }
 
 async function rememberChannel(event) {
@@ -144,7 +160,10 @@ async function handleJoin(event) {
   if (!wasOutside || !isInside) return;
 
   const clickId = event.invite_link?.name;
-  if (!isClickId(clickId)) return; // did not come from the landing
+  if (!isClickId(clickId)) {
+    log(`utente ${event.new_chat_member.user.id} entrato senza un link della landing`);
+    return;
+  }
   log(`utente ${event.new_chat_member.user.id} entrato dal link ${clickId}`);
   await recordSubscribe({ clickId, userId: event.new_chat_member.user.id, eventTime: event.date });
 }
