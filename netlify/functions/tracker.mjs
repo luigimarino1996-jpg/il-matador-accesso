@@ -154,9 +154,15 @@ async function recordSubscribe({ clickId, userId, eventTime }) {
     log(`utente ${userId}: clic ${clickId} non trovato, nessun evento`);
     return;
   }
-  // No per-person limit: every join through a new landing link counts.
+  // No per-person limit across links, but one join through one link counts once:
+  // Telegram can report the same join twice (join request + member update).
+  const sentKey = `sent/${clickId}-${userId}`;
+  if (await db().get(sentKey, { type: "json" })) {
+    log(`utente ${userId}: evento per il link ${clickId} già inviato, salto il doppione`);
+    return;
+  }
+  await db().setJSON(sentKey, { ts: new Date().toISOString() });
   await sendSubscribe({ click, clickId, userId, eventTime });
-  await db().setJSON(`member/${userId}`, { clickId, ts: new Date().toISOString() });
 }
 
 async function sendSubscribe({ click, clickId, userId, eventTime }) {

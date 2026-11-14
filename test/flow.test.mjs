@@ -142,6 +142,9 @@ test("join request from a landing link → approved, event sent, link kept", asy
   await hook(request(30, name2));
   globalThis.fetch = realFetch;
   assert.equal(metaCalls().length, 1);
+  // ...and the member update Telegram sends right after is not a second lead.
+  await hook(joinUpdate(30, name2));
+  assert.equal(metaCalls().length, 1);
   assert.equal(metaCalls()[0].body.data[0].user_data.fbp, "fb.1.7.8");
 
   // Requests through links not created by the landing are left alone.
