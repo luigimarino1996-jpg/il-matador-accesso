@@ -133,11 +133,11 @@ async function handleJoinRequest(event) {
   await recordSubscribe({ clickId, userId, eventTime: event.date });
 }
 
-// Direct joins (no approval step). Approved requests are already handled above.
+// Member updates: covers joins approved by someone else before our bot saw the request.
+// recordSubscribe drops the duplicate when the request was already handled above.
 async function handleJoin(event) {
   const channel = await getChannel();
   if (!channel || String(event.chat.id) !== String(channel.id)) return;
-  if (event.via_join_request) return;
 
   const wasOutside = ["left", "kicked"].includes(event.old_chat_member?.status);
   const isInside = ["member", "administrator", "creator"].includes(event.new_chat_member?.status);
@@ -145,6 +145,7 @@ async function handleJoin(event) {
 
   const clickId = event.invite_link?.name;
   if (!isClickId(clickId)) return; // did not come from the landing
+  log(`utente ${event.new_chat_member.user.id} entrato dal link ${clickId}`);
   await recordSubscribe({ clickId, userId: event.new_chat_member.user.id, eventTime: event.date });
 }
 
