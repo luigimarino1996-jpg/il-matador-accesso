@@ -99,6 +99,9 @@ async function rememberChannel(event) {
   await db().setJSON("config/channel", { id: event.chat.id, title: event.chat.title ?? "" });
 }
 
+// Every decision is logged, so the Netlify function logs show why an event was or wasn't sent.
+const log = (...parts) => console.log("[tracker]", ...parts);
+
 const isClickId = (name) => /^[0-9a-f]{24}$/.test(name ?? "");
 
 // Join request through a landing link: approve it, send Subscribe, retire the link.
@@ -107,13 +110,26 @@ async function handleJoinRequest(event) {
   if (!channel || String(event.chat.id) !== String(channel.id)) return;
 
   const clickId = event.invite_link?.name;
-  if (!isClickId(clickId)) return; // not a landing link: left for manual approval
+  const userId = event.from.id;
+  if (!isClickId(clickId)) {
+    log(`richiesta di ${userId}: link non della landing ("${clickId ?? "nessun nome"}"), ignorata`);
+    return;
+  }
 
   // Only links created by this project: another bot in the same channel handles its own.
-  if (!(await db().get(`click/${clickId}`, { type: "json" }))) return;
+  if (!(await db().get(`click/${clickId}`, { type: "json" }))) {
+    log(`richiesta di ${userId}: link ${clickId} non creato da questo progetto, ignorata`);
+    return;
+  }
 
-  const userId = event.from.id;
-  await tg("approveChatJoinRequest", { chat_id: event.chat.id, user_id: userId });
+  try {
+    await tg("approveChatJoinRequest", { chat_id: event.chat.id, user_id: userId });
+    log(`richiesta di ${userId} approvata (link ${clickId})`);
+  } catch (err) {
+    // Someone else (another bot or an admin) approved first: the person still joined through our link.
+    if (!String(err.message).includes("USER_ALREADY_PARTICIPANT")) throw err;
+    log(`richiesta di ${userId} già approvata da altri (link ${clickId}), invio comunque l'evento`);
+  }
   await recordSubscribe({ clickId, userId, eventTime: event.date });
 
   // One person per link, so every join stays tied to its own click.
@@ -140,8 +156,15 @@ async function handleJoin(event) {
 
 async function recordSubscribe({ clickId, userId, eventTime }) {
   const click = await db().get(`click/${clickId}`, { type: "json" });
-  if (!click) return;
-  if (await db().get(`member/${userId}`, { type: "json" })) return; // re-join: already sent
+  if (!click) {
+    log(`utente ${userId}: clic ${clickId} non trovato, nessun evento`);
+    return;
+  }
+  const previous = await db().get(`member/${userId}`, { type: "json" });
+  if (previous) {
+    log(`utente ${userId}: evento già inviato il ${previous.ts}, non lo ripeto (account già usato)`);
+    return;
+  }
 
   await sendSubscribe({ click, clickId, userId, eventTime });
   await db().setJSON(`member/${userId}`, { clickId, ts: new Date().toISOString() });
@@ -171,6 +194,9 @@ async function sendSubscribe({ click, clickId, userId, eventTime }) {
     `https://graph.facebook.com/${version}/${env("META_PIXEL_ID")}/events?access_token=${encodeURIComponent(env("META_ACCESS_TOKEN"))}`,
     { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) },
   );
+  const result = await res.clone().json().catch(() => ({}));
+  log(`Meta ${body.data[0].event_name} per utente ${userId}: HTTP ${res.status}`,
+    JSON.stringify({ events_received: result.events_received, fbtrace_id: result.fbtrace_id, error: result.error?.message }));
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
     throw new Error(`Meta: ${data.error?.message ?? res.status}`);

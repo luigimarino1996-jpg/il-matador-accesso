@@ -127,6 +127,19 @@ test("join request from a landing link → approved, Subscribe sent, link retire
   await hook(follow);
   assert.equal(metaCalls().length, 1);
 
+  // If someone else approved first, the lead still counts (once).
+  calls.length = 0;
+  await post("/api/join", { fbp: "fb.1.7.8" });
+  const name2 = calls.find((c) => c.url.includes("createChatInviteLink")).body.name;
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (url, init) => String(url).includes("approveChatJoinRequest")
+    ? Response.json({ ok: false, description: "Bad Request: USER_ALREADY_PARTICIPANT" })
+    : realFetch(url, init);
+  await hook(request(30, name2));
+  globalThis.fetch = realFetch;
+  assert.equal(metaCalls().length, 1);
+  assert.equal(metaCalls()[0].body.data[0].user_data.fbp, "fb.1.7.8");
+
   // Requests through links not created by the landing are left alone.
   calls.length = 0;
   await hook(request(21, "Link manuale"));
