@@ -90,8 +90,12 @@ test("click → join → Subscribe sent to Meta once", async () => {
   assert.equal(event.user_data.client_ip_address, "1.2.3.4");
   assert.equal(event.user_data.client_user_agent, "UA");
 
-  await hook(joinUpdate(7, invite.name)); // re-join
-  assert.equal(metaCalls().length, 1);
+  // Every join counts, even from the same person.
+  await post("/api/join", { fbp: "fb.1.1.2" });
+  const second = calls.filter((c) => c.url.includes("createChatInviteLink")).at(-1).body.name;
+  await hook(joinUpdate(7, second));
+  assert.equal(metaCalls().length, 2);
+  assert.notEqual(metaCalls()[0].body.data[0].event_id, metaCalls()[1].body.data[0].event_id);
 });
 
 test("joins not from the landing, other chats, wrong secret → nothing sent", async () => {
@@ -99,7 +103,7 @@ test("joins not from the landing, other chats, wrong secret → nothing sent", a
   await hook(joinUpdate(8, null));
   await hook(joinUpdate(9, name, -100555));
   assert.equal((await hook(joinUpdate(10, name), "wrong")).status, 403);
-  assert.equal(metaCalls().length, 1);
+  assert.equal(metaCalls().length, 2);
 });
 
 test("join request from a landing link → approved, Subscribe sent, link retired", async () => {

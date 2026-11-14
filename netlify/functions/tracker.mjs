@@ -160,12 +160,7 @@ async function recordSubscribe({ clickId, userId, eventTime }) {
     log(`utente ${userId}: clic ${clickId} non trovato, nessun evento`);
     return;
   }
-  const previous = await db().get(`member/${userId}`, { type: "json" });
-  if (previous) {
-    log(`utente ${userId}: evento già inviato il ${previous.ts}, non lo ripeto (account già usato)`);
-    return;
-  }
-
+  // No per-person limit: every join through a new landing link counts.
   await sendSubscribe({ click, clickId, userId, eventTime });
   await db().setJSON(`member/${userId}`, { clickId, ts: new Date().toISOString() });
 }
@@ -181,7 +176,7 @@ async function sendSubscribe({ click, clickId, userId, eventTime }) {
     data: [{
       event_name: env("META_EVENT_NAME") || "Subscribe",
       event_time: eventTime ?? Math.floor(Date.now() / 1000),
-      event_id: `sub-${clickId}`,
+      event_id: `sub-${clickId}-${userId}`,
       action_source: "website",
       event_source_url: click.url || undefined,
       user_data: userData,
