@@ -19,7 +19,7 @@
     min-height: 100dvh;
     display: grid;
     place-items: center;
-    padding: 16px 16px max(16px, env(safe-area-inset-bottom));
+    padding: 12px 12px max(12px, env(safe-area-inset-bottom));
     font-family: "Outfit", system-ui, -apple-system, sans-serif;
     color: #fff;
     background-color: #0a1222;
@@ -33,9 +33,9 @@
   .card {
     width: 100%;
     max-width: 440px;
-    padding: 44px 26px 30px;
+    padding: 24px 20px 18px;
     text-align: center;
-    border-radius: 34px;
+    border-radius: 28px;
     border: 1px solid rgba(255, 255, 255, .14);
     background: linear-gradient(180deg, rgba(48, 98, 150, .55) 0%, rgba(30, 36, 70, .55) 50%, rgba(52, 36, 110, .6) 100%);
     box-shadow: 0 30px 80px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .08);
@@ -45,10 +45,10 @@
   /* Photo with gradient ring and Telegram badge */
   .avatar-wrap {
     position: relative;
-    width: 228px;
-    height: 228px;
-    margin: 0 auto 34px;
-    padding: 8px;
+    width: clamp(118px, 19vh, 150px);
+    height: clamp(118px, 19vh, 150px);
+    margin: 0 auto 18px;
+    padding: 6px;
     border-radius: 50%;
     background: conic-gradient(from 200deg, #3fd6c5, #3c9ee8, #4f6cf0, #7a4cf0, #3fd6c5);
     box-shadow: 0 0 60px rgba(64, 150, 230, .35);
@@ -56,7 +56,7 @@
   .avatar-wrap::before {
     content: "";
     position: absolute;
-    inset: 8px;
+    inset: 6px;
     border-radius: 50%;
     background: #070b14;
   }
@@ -67,25 +67,25 @@
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
-    border: 7px solid #070b14;
+    border: 5px solid #070b14;
   }
   .badge {
     position: absolute;
-    right: 8px;
-    bottom: 8px;
-    width: 58px;
-    height: 58px;
+    right: 2px;
+    bottom: 2px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: grid;
     place-items: center;
     background: #3a9be6;
-    border: 5px solid #070b14;
+    border: 4px solid #070b14;
   }
-  .badge svg { width: 28px; height: 28px; margin-left: -3px; }
+  .badge svg { width: 19px; height: 19px; margin-left: -2px; }
 
   h1 {
-    margin: 0 0 34px;
-    font-size: clamp(1.75rem, 7.4vw, 2.15rem);
+    margin: 0 0 16px;
+    font-size: clamp(1.3rem, 5.6vw, 1.6rem);
     line-height: 1.12;
     font-weight: 800;
     letter-spacing: -.02em;
@@ -94,9 +94,9 @@
   .brand { display: block; color: #f6f43c; }
 
   h2 {
-    margin: 0 0 28px;
+    margin: 0 0 14px;
     font-family: "Montserrat", system-ui, sans-serif;
-    font-size: clamp(1.6rem, 7.2vw, 2rem);
+    font-size: clamp(1.15rem, 5.2vw, 1.45rem);
     line-height: 1.12;
     font-weight: 900;
     letter-spacing: .01em;
@@ -105,16 +105,16 @@
   h2 span { color: #8ef0ff; }
 
   .arrow {
-    width: 68px;
-    height: 68px;
-    margin: 0 auto 22px;
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 14px;
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, .3);
     display: grid;
     place-items: center;
     animation: bob 1.6s ease-in-out infinite;
   }
-  .arrow svg { width: 26px; height: 26px; }
+  .arrow svg { width: 18px; height: 18px; }
   @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
   @media (prefers-reduced-motion: reduce) { .arrow { animation: none; } }
 
@@ -123,29 +123,29 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 14px;
-    padding: 22px 20px;
+    gap: 10px;
+    padding: 16px 18px;
     border: 0;
     border-radius: 999px;
     cursor: pointer;
     font-family: "Montserrat", system-ui, sans-serif;
     font-weight: 900;
-    font-size: clamp(1.05rem, 4.6vw, 1.2rem);
+    font-size: clamp(.98rem, 4.3vw, 1.1rem);
     letter-spacing: .09em;
     color: #fff;
     background: linear-gradient(90deg, #4aa7e8 0%, #4d8fe6 55%, #6a45ec 100%);
     box-shadow: 0 12px 34px rgba(80, 120, 240, .45);
     transition: transform .1s, filter .15s;
   }
-  .button svg { width: 30px; height: 30px; flex: none; }
+  .button svg { width: 24px; height: 24px; flex: none; }
   .button:hover { filter: brightness(1.06); }
   .button:active { transform: scale(.98); }
   .button[disabled] { opacity: .75; cursor: progress; }
 
-  .note { margin: 14px 0 0; font-family: "Montserrat", system-ui, sans-serif; font-weight: 600; font-size: 1.02rem; color: rgba(255, 255, 255, .88); }
+  .note { margin: 10px 0 0; font-family: "Montserrat", system-ui, sans-serif; font-weight: 600; font-size: .88rem; color: rgba(255, 255, 255, .88); }
   .fallback { display: block; margin: 14px 0 0; font-size: .95rem; color: #8ef0ff; }
   .fallback[hidden] { display: none; }
-  .error { min-height: 1.3em; margin: 10px 0 0; font-size: .92rem; color: #ff8a8a; }
+  .error { min-height: 0; margin: 6px 0 0; font-size: .92rem; color: #ff8a8a; }
 </style>
 </head>
 <body>
