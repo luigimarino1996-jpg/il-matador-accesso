@@ -156,3 +156,23 @@ test("join request from a landing link → approved, event sent, link kept", asy
   await hook(request(22, "0123456789abcdef01234567"));
   assert.equal(calls.length, 0);
 });
+
+test("CLICK_EVENT_NAME sends an event on the button click with the browser's id", async () => {
+  process.env.CLICK_EVENT_NAME = "Lead";
+  const config = await (await handler(new Request("https://site.test/api/config"))).json();
+  assert.equal(config.clickEvent, "Lead");
+  calls.length = 0;
+  await post("/api/join", { fbp: "fb.1.9.9", event_id: "click-abc123xyz" });
+  delete process.env.CLICK_EVENT_NAME;
+  assert.equal(metaCalls().length, 1);
+  const event = metaCalls()[0].body.data[0];
+  assert.equal(event.event_name, "Lead");
+  assert.equal(event.event_id, "click-abc123xyz");
+  assert.equal(event.user_data.fbp, "fb.1.9.9");
+  assert.equal(event.user_data.external_id, undefined);
+
+  // Without the variable, a click sends nothing.
+  calls.length = 0;
+  await post("/api/join", { fbp: "fb.1.9.9" });
+  assert.equal(metaCalls().length, 0);
+});

@@ -78,10 +78,13 @@
   </main>
 
 <script>
-  // Meta Pixel: l'ID arriva dal server (variabile META_PIXEL_ID su Netlify).
+  // Meta Pixel: ID ed evento sul clic arrivano dal server (variabili su Netlify).
+  let clickEvent = "";
   fetch("/api/config")
     .then((r) => r.json())
-    .then(({ pixelId }) => {
+    .then((config) => {
+      const { pixelId } = config;
+      clickEvent = config.clickEvent || "";
       if (!pixelId) return;
       !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
       n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
@@ -104,11 +107,15 @@
     button.textContent = "ATTENDI…";
     error.textContent = "";
     try {
+      // Same id in the browser and on the server, so Meta counts the click event once.
+      const eventId = "click-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+      if (clickEvent && window.fbq) fbq("track", clickEvent, {}, { eventID: eventId });
       const fbclid = new URLSearchParams(location.search).get("fbclid");
       const res = await fetch("/api/join", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
+          event_id: eventId,
           url: location.href,
           fbp: cookie("_fbp"),
           fbc: cookie("_fbc") || (fbclid ? `fb.1.${Date.now()}.${fbclid}` : ""),

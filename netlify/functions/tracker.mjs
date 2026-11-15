@@ -20,7 +20,9 @@ export default async (req, context) => {
   const { pathname } = new URL(req.url);
   if (pathname === "/api/join") return join(req, context);
   // The Pixel ID is public by nature; the access token never leaves the server.
-  if (pathname === "/api/config") return json({ pixelId: env("META_PIXEL_ID") });
+  if (pathname === "/api/config") {
+    return json({ pixelId: env("META_PIXEL_ID"), clickEvent: env("CLICK_EVENT_NAME") });
+  }
   if (pathname === "/api/telegram") return telegram(req);
   if (pathname === "/api/setup") return setup(req);
   return json({ error: "not_found" }, 404);
@@ -65,14 +67,27 @@ async function join(req, context) {
     return json({ error: "invite_failed" }, 502);
   }
 
-  await db().setJSON(`click/${clickId}`, {
+  const click = {
     ts: new Date().toISOString(),
     url: clean(body.url, 1000),
     fbp: clean(body.fbp),
     fbc: clean(body.fbc, 600),
     ip: context?.ip ?? "",
     ua: clean(req.headers.get("user-agent") ?? "", 500),
-  });
+  };
+  await db().setJSON(`click/${clickId}`, click);
+
+  // Optional event on the button click (CLICK_EVENT_NAME, e.g. Lead). The landing fires the
+  // same event in the browser with the same id, so Meta keeps one and drops the other.
+  const clickEvent = env("CLICK_EVENT_NAME");
+  if (clickEvent) {
+    const eventId = /^[\w-]{8,64}$/.test(body.event_id ?? "") ? body.event_id : `click-${clickId}`;
+    const sending = sendMetaEvent({ eventName: clickEvent, eventId, click, label: `clic ${clickId}` })
+      .catch((err) => console.error(err));
+    // Don't make the visitor wait for Meta before opening Telegram.
+    if (context?.waitUntil) context.waitUntil(sending);
+    else await sending;
+  }
   return json({ link: invite.invite_link });
 }
 
@@ -186,7 +201,19 @@ async function recordSubscribe({ clickId, userId, eventTime }) {
 }
 
 async function sendSubscribe({ click, clickId, userId, eventTime }) {
-  const userData = { external_id: [sha256(userId)] };
+  await sendMetaEvent({
+    eventName: env("META_EVENT_NAME") || "Subscribe",
+    eventId: `sub-${clickId}-${userId}`,
+    eventTime,
+    click,
+    externalId: userId,
+    label: `utente ${userId}`,
+  });
+}
+
+async function sendMetaEvent({ eventName, eventId, eventTime, click, externalId, label }) {
+  const userData = {};
+  if (externalId) userData.external_id = [sha256(externalId)];
   if (click.ip) userData.client_ip_address = click.ip;
   if (click.ua) userData.client_user_agent = click.ua;
   if (click.fbp) userData.fbp = click.fbp;
@@ -194,9 +221,9 @@ async function sendSubscribe({ click, clickId, userId, eventTime }) {
 
   const body = {
     data: [{
-      event_name: env("META_EVENT_NAME") || "Subscribe",
+      event_name: eventName,
       event_time: eventTime ?? Math.floor(Date.now() / 1000),
-      event_id: `sub-${clickId}-${userId}`,
+      event_id: eventId,
       action_source: "website",
       event_source_url: click.url || undefined,
       user_data: userData,
@@ -210,7 +237,7 @@ async function sendSubscribe({ click, clickId, userId, eventTime }) {
     { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) },
   );
   const result = await res.clone().json().catch(() => ({}));
-  log(`Meta ${body.data[0].event_name} per utente ${userId}: HTTP ${res.status}`,
+  log(`Meta ${eventName} per ${label}: HTTP ${res.status}`,
     JSON.stringify({ events_received: result.events_received, fbtrace_id: result.fbtrace_id, error: result.error?.message }));
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
