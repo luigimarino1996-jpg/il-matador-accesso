@@ -38,5 +38,6 @@ Toglila quando hai finito.
 - Chi entra con un link non creato dalla landing non viene inviato a Meta.
 - `CLICK_EVENT_NAME` (facoltativo, es. `Lead`) invia un evento anche al tocco del pulsante.
 - `META_EVENT_NAME` cambia l'evento inviato (predefinito `Subscribe`, es. `Lead`).
+- `LANDING` sceglie la landing del progetto tra i file in `landings/` (predefinita `classica`, es. `dynamo`).
 - Variabili facoltative: `TELEGRAM_CHANNEL_ID` (per forzare un canale preciso),
   `META_API_VERSION` (predefinita `v24.0`).
