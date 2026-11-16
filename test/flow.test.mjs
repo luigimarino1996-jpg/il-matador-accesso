@@ -161,6 +161,7 @@ test("CLICK_EVENT_NAME sends an event on the button click with the browser's id"
   process.env.CLICK_EVENT_NAME = "Lead";
   const config = await (await handler(new Request("https://site.test/api/config"))).json();
   assert.equal(config.clickEvent, "Lead");
+  assert.equal(config.clarityId, "");
   calls.length = 0;
   await post("/api/join", { fbp: "fb.1.9.9", event_id: "click-abc123xyz" });
   delete process.env.CLICK_EVENT_NAME;

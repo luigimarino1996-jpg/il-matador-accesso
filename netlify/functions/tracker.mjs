@@ -21,7 +21,11 @@ export default async (req, context) => {
   if (pathname === "/api/join") return join(req, context);
   // The Pixel ID is public by nature; the access token never leaves the server.
   if (pathname === "/api/config") {
-    return json({ pixelId: env("META_PIXEL_ID"), clickEvent: env("CLICK_EVENT_NAME") });
+    return json({
+      pixelId: env("META_PIXEL_ID"),
+      clickEvent: env("CLICK_EVENT_NAME"),
+      clarityId: env("CLARITY_ID"),
+    });
   }
   if (pathname === "/api/telegram") return telegram(req);
   if (pathname === "/api/setup") return setup(req);
