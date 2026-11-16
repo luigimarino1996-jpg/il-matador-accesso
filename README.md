@@ -39,6 +39,7 @@ Toglila quando hai finito.
 - `CLICK_EVENT_NAME` (facoltativo, es. `Lead`) invia un evento anche al tocco del pulsante.
 - `META_EVENT_NAME` cambia l'evento inviato (predefinito `Subscribe`, es. `Lead`).
 - `LANDING_IT` + `LANDING_ESTERO` mostrano una landing a chi arriva dall'Italia e un'altra a tutti gli altri, sullo stesso indirizzo (anteprima con `?anteprima=it` o `?anteprima=estero`).
+- `AGGIORNA_SOLO_SU_RICHIESTA=1` salta gli aggiornamenti automatici di quel progetto (risparmia crediti); per aggiornarlo comunque, scrivi `[tutti]` nel messaggio del commit.
 - `LANDING` sceglie la landing del progetto tra i file in `landings/` (predefinita `classica`, es. `dynamo`).
 - Variabili facoltative: `TELEGRAM_CHANNEL_ID` (per forzare un canale preciso),
   `META_API_VERSION` (predefinita `v24.0`).
