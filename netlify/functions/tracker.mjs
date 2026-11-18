@@ -25,6 +25,8 @@ export default async (req, context) => {
       pixelId: env("META_PIXEL_ID"),
       clickEvent: env("CLICK_EVENT_NAME"),
       clarityId: env("CLARITY_ID"),
+      // Second pixel, browser only: gets PageView and the click event, not Subscribe.
+      extraPixelId: env("EXTRA_PIXEL_ID"),
     });
   }
   if (pathname === "/api/telegram") return telegram(req);

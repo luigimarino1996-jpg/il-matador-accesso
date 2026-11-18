@@ -101,6 +101,8 @@
       t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
       document,'script','https://connect.facebook.net/en_US/fbevents.js');
       fbq("init", pixelId);
+      // Optional second pixel (EXTRA_PIXEL_ID): receives PageView and the click event from the browser.
+      if (/^\d{10,20}$/.test(config.extraPixelId || "")) fbq("init", config.extraPixelId);
       fbq("track", "PageView");
     })
     .catch(() => {});

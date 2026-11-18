@@ -40,6 +40,7 @@ Toglila quando hai finito.
 - `META_EVENT_NAME` cambia l'evento inviato (predefinito `Subscribe`, es. `Lead`).
 - `LANDING_IT` + `LANDING_ESTERO` mostrano una landing a chi arriva dall'Italia e un'altra a tutti gli altri, sullo stesso indirizzo (anteprima con `?anteprima=it` o `?anteprima=estero`).
 - `AGGIORNA_SOLO_SU_RICHIESTA=1` salta gli aggiornamenti automatici di quel progetto (risparmia crediti); per aggiornarlo comunque, scrivi `[tutti]` nel messaggio del commit.
+- `EXTRA_PIXEL_ID` aggiunge un secondo Pixel, solo dal browser: riceve PageView e l'evento sul clic (non Subscribe).
 - `CLARITY_ID` attiva Microsoft Clarity sulle landing del progetto; ogni sessione ha il tag `landing` con il nome della pagina.
 - `LANDING` sceglie la landing del progetto tra i file in `landings/` (predefinita `classica`, es. `dynamo`).
 - Variabili facoltative: `TELEGRAM_CHANNEL_ID` (per forzare un canale preciso),
