@@ -109,13 +109,15 @@
 
   const button = document.getElementById("join");
   const error = document.getElementById("error");
-  const fallback = document.getElementById("fallback");
   const cookie = (name) =>
     document.cookie.split("; ").find((c) => c.startsWith(name + "="))?.split("=")[1] ?? "";
 
+  // One tap at a time; the button text never changes.
+  let busy = false;
+
   button.addEventListener("click", async () => {
-    button.disabled = true;
-    button.textContent = "ATTENDI…";
+    if (busy) return;
+    busy = true;
     error.textContent = "";
     try {
       // Same id in the browser and on the server, so Meta counts the click event once.
@@ -134,17 +136,13 @@
       });
       const data = await res.json();
       if (!data.link) throw new Error("no link");
-      // Open the Telegram app directly; the web link stays as a fallback below the button.
-      const code = data.link.split("/").pop().replace(/^\+/, "");
-      fallback.href = data.link;
-      fallback.hidden = false;
-      location.href = `tg://join?invite=${encodeURIComponent(code)}`;
+      // Normal Telegram link (t.me), no direct app opening.
+      location.href = data.link;
       // If the visitor comes back to this page, the button works again.
-      setTimeout(() => { button.disabled = false; button.textContent = "ACCEDI ORA"; }, 3000);
+      setTimeout(() => { busy = false; }, 3000);
     } catch {
       error.textContent = "Qualcosa non ha funzionato. Riprova tra qualche secondo.";
-      button.disabled = false;
-      button.textContent = "ACCEDI ORA";
+      busy = false;
     }
   });
 </script>
