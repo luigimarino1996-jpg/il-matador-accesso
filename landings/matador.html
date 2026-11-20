@@ -117,7 +117,11 @@ h2{font-size:clamp(28px,4.6vw,44px);margin:14px 0 14px}
 .vid .play svg{width:24px;height:24px;margin-left:4px;fill:#0a0b0d}
 .vid .lbl{position:absolute;left:12px;bottom:12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
 .vid .lbl::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold)}
-.vid.playing .play{opacity:0;pointer-events:none}
+.vid .play svg.i-pause{display:none;margin-left:0}
+.vid.playing .play{background:transparent;pointer-events:none}
+.vid.playing .play span{opacity:.55}
+.vid.playing .play .i-play{display:none}
+.vid.playing .play .i-pause{display:block}
 
 /* Results */
 .results{background:var(--bg2);border-block:1px solid var(--line)}
@@ -299,14 +303,14 @@ footer p+p{margin-top:10px}
       <p class="lead">Membri del canale che raccontano la loro esperienza, con il proprio volto. Tocca un video per avviarlo.</p>
     </div>
     <div class="vids">
-      <div class="vid rv"><video src="/video/rec1.mp4" poster="/video/rec1.jpg" preload="none" playsinline></video><div class="play"><span><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
-      <div class="vid rv"><video src="/video/rec2.mp4" poster="/video/rec2.jpg" preload="none" playsinline></video><div class="play"><span><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
-      <div class="vid rv"><video src="/video/rec3.mp4" poster="/video/rec3.jpg" preload="none" playsinline></video><div class="play"><span><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
-      <div class="vid rv"><video src="/video/rec4.mp4" poster="/video/rec4.jpg" preload="none" playsinline></video><div class="play"><span><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
-      <div class="vid rv"><video src="/video/rec5.mp4" poster="/video/rec5.jpg" preload="none" playsinline></video><div class="play"><span><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
-      <div class="vid rv"><video src="/video/rec6.mp4" poster="/video/rec6.jpg" preload="none" playsinline></video><div class="play"><span><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
-      <div class="vid rv"><video src="/video/rec7.mp4" poster="/video/rec7.jpg" preload="none" playsinline></video><div class="play"><span><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
-      <div class="vid rv"><video src="/video/rec8.mp4" poster="/video/rec8.jpg" preload="none" playsinline></video><div class="play"><span><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
+      <div class="vid rv"><video src="/video/rec1.mp4" poster="/video/rec1.jpg" preload="none" playsinline></video><div class="play" aria-hidden="true"><span><svg class="i-play" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg><svg class="i-pause" viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
+      <div class="vid rv"><video src="/video/rec2.mp4" poster="/video/rec2.jpg" preload="none" playsinline></video><div class="play" aria-hidden="true"><span><svg class="i-play" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg><svg class="i-pause" viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
+      <div class="vid rv"><video src="/video/rec3.mp4" poster="/video/rec3.jpg" preload="none" playsinline></video><div class="play" aria-hidden="true"><span><svg class="i-play" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg><svg class="i-pause" viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
+      <div class="vid rv"><video src="/video/rec4.mp4" poster="/video/rec4.jpg" preload="none" playsinline></video><div class="play" aria-hidden="true"><span><svg class="i-play" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg><svg class="i-pause" viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
+      <div class="vid rv"><video src="/video/rec5.mp4" poster="/video/rec5.jpg" preload="none" playsinline></video><div class="play" aria-hidden="true"><span><svg class="i-play" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg><svg class="i-pause" viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
+      <div class="vid rv"><video src="/video/rec6.mp4" poster="/video/rec6.jpg" preload="none" playsinline></video><div class="play" aria-hidden="true"><span><svg class="i-play" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg><svg class="i-pause" viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
+      <div class="vid rv"><video src="/video/rec7.mp4" poster="/video/rec7.jpg" preload="none" playsinline></video><div class="play" aria-hidden="true"><span><svg class="i-play" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg><svg class="i-pause" viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
+      <div class="vid rv"><video src="/video/rec8.mp4" poster="/video/rec8.jpg" preload="none" playsinline></video><div class="play" aria-hidden="true"><span><svg class="i-play" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg><svg class="i-pause" viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
     </div>
   </div>
 </section>
@@ -412,14 +416,18 @@ footer p+p{margin-top:10px}
   var vids = document.querySelectorAll('.vid');
   vids.forEach(function(box){
     var v = box.querySelector('video');
+    // A tap anywhere on the video toggles play / pause; the centre button shows the state.
     box.addEventListener('click', function(){
-      if (v.paused){
+      if (v.paused || v.ended){
         vids.forEach(function(o){ var ov=o.querySelector('video'); if(ov!==v && !ov.paused){ ov.pause(); } });
-        v.play(); box.classList.add('playing'); v.setAttribute('controls','');
+        var p = v.play(); if (p && p.catch) p.catch(function(){});
+      } else {
+        v.pause();
       }
     });
-    v.addEventListener('pause', function(){ box.classList.remove('playing'); v.removeAttribute('controls'); });
-    v.addEventListener('ended', function(){ box.classList.remove('playing'); v.removeAttribute('controls'); });
+    v.addEventListener('play', function(){ box.classList.add('playing'); });
+    v.addEventListener('pause', function(){ box.classList.remove('playing'); });
+    v.addEventListener('ended', function(){ box.classList.remove('playing'); });
   });
 
   var lb = document.getElementById('lb'), lbi = lb.querySelector('img');
