@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="it" data-landing="matador">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Il Matador – Canale Telegram di Trading di Luigi Marino</title>
+<meta name="description" content="Segnali, formazione e software di trading. Entra gratis nel canale Telegram di Luigi Marino, oltre 41.000 iscritti.">
+<meta name="theme-color" content="#0a0b0d">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/img/luigi.jpg">
+<meta property="og:title" content="Il Matador – Canale Telegram di Trading">
+<meta property="og:description" content="Segnali, formazione e software di trading. Oltre 41.000 iscritti.">
+<meta property="og:image" content="/img/luigi.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+
+
+<style>
+:root{
+  --bg:#0a0b0d; --bg2:#111317; --card:#15181d; --line:#23272e;
+  --text:#f2f3f5; --muted:#9aa1ab; --gold:#e8b84a; --gold2:#ffd77a;
+  --tg:#2aabee; --green:#3ddc84; --red:#ff5d5d;
+  --r:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,video{display:block;max-width:100%}
+a{color:inherit}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;line-height:1.12;letter-spacing:-.02em}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+section{padding:84px 0}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.eyebrow::before{content:"";width:18px;height:2px;background:var(--gold);border-radius:2px}
+h2{font-size:clamp(28px,4.6vw,44px);margin:14px 0 14px}
+.lead{color:var(--muted);font-size:17px;max-width:620px}
+.gold{background:linear-gradient(100deg,var(--gold),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;background:var(--tg);color:#fff;font-weight:700;font-size:17px;padding:18px 28px;border-radius:14px;text-decoration:none;border:0;cursor:pointer;box-shadow:0 10px 30px -8px rgba(42,171,238,.55);transition:transform .15s ease,box-shadow .2s ease;font-family:Inter,sans-serif}
+.btn:hover{transform:translateY(-2px);box-shadow:0 16px 40px -10px rgba(42,171,238,.7)}
+.btn:active{transform:translateY(0)}
+.btn svg{width:22px;height:22px;flex:none}
+.btn.big{font-size:18px;padding:20px 34px}
+.btn-note{font-size:13px;color:var(--muted);margin-top:12px;display:flex;gap:16px;flex-wrap:wrap}
+.btn-note span::before{content:"✓ ";color:var(--green)}
+
+/* Nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;padding:14px 0;transition:background .25s,border-color .25s;border-bottom:1px solid transparent}
+.nav.solid{background:rgba(10,11,13,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;font-family:Sora,Inter,system-ui,sans-serif;font-weight:700;font-size:17px}
+.brand img{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)}
+.nav .btn{padding:10px 16px;font-size:14px;border-radius:10px;box-shadow:none}
+
+/* Hero */
+.hero{position:relative;padding:130px 0 70px;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:-20% -10% auto auto;width:720px;height:720px;background:radial-gradient(circle,rgba(232,184,74,.16),transparent 62%);pointer-events:none}
+.hero::after{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;opacity:.25;mask-image:radial-gradient(ellipse at 70% 30%,#000 10%,transparent 65%);-webkit-mask-image:radial-gradient(ellipse at 70% 30%,#000 10%,transparent 65%);pointer-events:none}
+.hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);padding:7px 14px;border-radius:99px;font-size:13px;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(61,220,132,.7);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 9px rgba(61,220,132,0)}100%{box-shadow:0 0 0 0 rgba(61,220,132,0)}}
+.hero h1{font-size:clamp(36px,6.2vw,64px);margin:22px 0 20px;font-weight:800}
+.hero p.sub{font-size:clamp(17px,2.2vw,20px);color:#c9cdd3;max-width:540px;margin-bottom:32px}
+.hero-card{position:relative;background:linear-gradient(160deg,#1a1d23,#111317);border:1px solid var(--line);border-radius:28px;padding:28px;text-align:center}
+.hero-card .ph{width:180px;height:180px;margin:6px auto 18px;border-radius:50%;padding:4px;background:conic-gradient(from 200deg,var(--gold),#7a5a14,var(--gold2),var(--gold))}
+.hero-card .ph img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid #14161a}
+.hero-card h3{font-size:24px}
+.hero-card .role{color:var(--muted);font-size:14px;margin-top:4px}
+.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.mini div{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px 6px}
+.mini b{display:block;font-family:Sora,Inter,system-ui,sans-serif;font-size:20px}
+.mini small{color:var(--muted);font-size:12px}
+.float{position:absolute;background:#0f1114;border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-size:13px;display:flex;align-items:center;gap:10px;box-shadow:0 20px 40px -20px #000}
+.float.f1{top:-16px;left:-22px}
+.float.f2{bottom:-18px;right:-18px}
+.float i{font-style:normal;font-weight:700;color:var(--green)}
+
+/* Ticker */
+.ticker{border-block:1px solid var(--line);background:var(--bg2);overflow:hidden;white-space:nowrap;padding:14px 0}
+.ticker .track{display:inline-flex;gap:48px;animation:scroll 32s linear infinite;font-family:Sora,Inter,system-ui,sans-serif;font-weight:600;color:#6f7680;font-size:15px}
+.ticker .track span{display:inline-flex;gap:10px;align-items:center}
+.ticker .track span::before{content:"◆";color:var(--gold);font-size:10px}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+/* Features */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
+.feat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:28px;position:relative;overflow:hidden;transition:border-color .2s,transform .2s}
+.feat:hover{border-color:#3a3f48;transform:translateY(-3px)}
+.feat .ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:rgba(232,184,74,.1);border:1px solid rgba(232,184,74,.25);margin-bottom:20px}
+.feat .ic svg{width:26px;height:26px;stroke:var(--gold)}
+.feat h3{font-size:21px;margin-bottom:10px}
+.feat p{color:var(--muted);font-size:15.5px}
+.feat .num{position:absolute;top:18px;right:22px;font-family:Sora,Inter,system-ui,sans-serif;font-weight:800;font-size:44px;color:#1f2329}
+
+/* About */
+.about{background:var(--bg2);border-block:1px solid var(--line)}
+.about .wrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:56px;align-items:center}
+.about .photo{position:relative;border-radius:50%;overflow:visible;aspect-ratio:1/1;padding:6px;background:conic-gradient(from 200deg,var(--gold),#7a5a14,var(--gold2),var(--gold))}
+.about .photo img{width:100%;height:100%;object-fit:cover;border-radius:50%;border:6px solid var(--bg2)}
+.about .photo .tag{position:absolute;left:50%;transform:translateX(-50%);bottom:-6px;white-space:nowrap;background:rgba(10,11,13,.78);backdrop-filter:blur(8px);border:1px solid var(--line);padding:10px 14px;border-radius:12px;font-size:14px}
+.about .photo .tag b{color:var(--gold)}
+.checks{list-style:none;margin:26px 0 30px;display:grid;gap:14px}
+.checks li{display:flex;gap:14px;align-items:flex-start;font-size:16px}
+.checks li svg{flex:none;width:24px;height:24px;margin-top:1px}
+
+/* Videos */
+.vids{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px}
+.vid{position:relative;border-radius:16px;overflow:hidden;background:#000;aspect-ratio:9/16;border:1px solid var(--line);cursor:pointer}
+.vid video{width:100%;height:100%;object-fit:cover}
+.vid .play{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.65));transition:opacity .2s}
+.vid .play span{width:62px;height:62px;border-radius:50%;background:rgba(255,255,255,.95);display:grid;place-items:center;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .2s}
+.vid:hover .play span{transform:scale(1.08)}
+.vid .play svg{width:24px;height:24px;margin-left:4px;fill:#0a0b0d}
+.vid .lbl{position:absolute;left:12px;bottom:12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+.vid .lbl::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.vid.playing .play{opacity:0;pointer-events:none}
+
+/* Results */
+.results{background:var(--bg2);border-block:1px solid var(--line)}
+.shots{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 20px 18px;margin:40px -20px 0;scrollbar-width:thin;scrollbar-color:#2a2f37 transparent}
+.shot{flex:none;width:250px;scroll-snap-align:start;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:zoom-in;transition:transform .2s}
+.shot:hover{transform:translateY(-3px)}
+.shot img{width:100%;height:380px;object-fit:cover;object-position:top}
+.shot figcaption{padding:12px 14px;font-size:13px;color:var(--muted);border-top:1px solid var(--line)}
+.hint{font-size:13px;color:var(--muted);margin-top:4px}
+.honest{margin-top:26px;display:flex;gap:14px;align-items:flex-start;background:rgba(232,184,74,.06);border:1px solid rgba(232,184,74,.22);border-radius:14px;padding:16px 18px;font-size:14.5px;color:#cfd3d9;max-width:760px}
+.honest b{color:var(--gold)}
+
+/* Steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px;counter-reset:s}
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px}
+.step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--gold);color:#111;font-family:Sora,Inter,system-ui,sans-serif;font-weight:800;margin-bottom:18px}
+.step h3{font-size:19px;margin-bottom:8px}
+.step p{color:var(--muted);font-size:15px}
+
+/* FAQ */
+.faq{max-width:760px;margin:40px auto 0}
+details{border-bottom:1px solid var(--line);padding:20px 0}
+summary{cursor:pointer;list-style:none;font-weight:600;font-size:17px;display:flex;justify-content:space-between;gap:20px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:24px;line-height:1;color:var(--gold);transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--muted);margin-top:12px;font-size:15.5px}
+
+/* Final CTA */
+.final{text-align:center;position:relative;overflow:hidden}
+.final .box{background:radial-gradient(ellipse at top,rgba(232,184,74,.18),transparent 60%),var(--card);border:1px solid var(--line);border-radius:28px;padding:64px 24px}
+.final h2{max-width:640px;margin:14px auto}
+.final .lead{margin:0 auto 32px}
+.final .btn-note{justify-content:center}
+
+/* Footer */
+footer{padding:40px 0 120px;border-top:1px solid var(--line);color:#6f7680;font-size:12.5px;line-height:1.6}
+footer p+p{margin-top:10px}
+
+/* Sticky mobile CTA */
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:60;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(10,11,13,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);transform:translateY(110%);transition:transform .3s ease;display:none}
+.sticky.show{transform:none}
+.sticky .btn{width:100%;padding:16px}
+
+/* Error notice */
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:120;background:#2a1414;border:1px solid #6b2a2a;color:#ffb4b4;padding:12px 16px;border-radius:12px;font-size:14px;display:none;max-width:90vw;text-align:center}
+.toast.show{display:block}
+
+/* Lightbox */
+.lb{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
+.lb.open{display:flex}
+.lb img{max-height:92vh;max-width:96vw;border-radius:12px}
+
+/* Reveal */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:none}
+
+@media (max-width:900px){
+  .hero .wrap,.about .wrap{grid-template-columns:1fr}
+  .hero{padding-top:110px}
+  .hero-card{max-width:420px;margin:24px auto 0;width:100%}
+  .grid3,.steps{grid-template-columns:1fr}
+  .vids{grid-template-columns:repeat(2,1fr);gap:12px}
+  .about .photo{max-width:420px}
+  .sticky{display:block}
+  .nav .btn{display:none}
+}
+@media (max-width:520px){
+  section{padding:64px 0}
+  .btn.big,.hero .btn{width:100%}
+  .float.f1{left:-6px}.float.f2{right:-6px}
+  .shot{width:220px}.shot img{height:330px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="tg" viewBox="0 0 24 24"><path fill="currentColor" d="M21.9 4.3 18.8 19c-.2 1-.9 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-7.9c.4-.3-.1-.5-.6-.2L6.8 12.9 2.2 11.5c-1-.3-1-1 .2-1.5L20.6 3c.8-.3 1.6.2 1.3 1.3z"/></symbol>
+  <symbol id="ck" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="rgba(232,184,74,.14)"/><path d="m7 12.5 3.2 3L17 9" fill="none" stroke="#e8b84a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <div class="wrap">
+    <div class="brand"><img src="/img/luigi.jpg" alt="Luigi Marino">Il Matador</div>
+    <a class="btn js-tg" href="#"><svg><use href="#tg"/></svg>Entra nel canale</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="rv">
+      <span class="pill"><span class="dot"></span>Canale Telegram attivo · 41.668 iscritti</span>
+      <h1>Fai trading con chi lo fa <span class="gold">da oltre 8 anni.</span></h1>
+      <p class="sub">Segnali, formazione e software di trading in un unico canale Telegram gratuito. Operatività manuale e automatica, spiegata da Luigi Marino.</p>
+      <a class="btn big js-tg" href="#"><svg><use href="#tg"/></svg>Entra gratis nel canale</a>
+      <div class="btn-note"><span>Gratuito</span><span>Nessuna registrazione</span><span>Esci quando vuoi</span></div>
+    </div>
+    <div class="hero-card rv">
+      <div class="float f1">📈 <span>Segnali <i>in tempo reale</i></span></div>
+      <div class="ph"><img src="/img/luigi.jpg" alt="Luigi Marino, Il Matador"></div>
+      <h3>Luigi Marino</h3>
+      <div class="role">“Il Matador” 🇮🇹 · Trader manuale e automatico</div>
+      <div class="mini">
+        <div><b>8+</b><small>anni di trading</small></div>
+        <div><b>41K+</b><small>iscritti</small></div>
+        <div><b>3 in 1</b><small>segnali · corsi · software</small></div>
+      </div>
+      <div class="float f2">🤖 <span>Trading <i>automatico</i></span></div>
+    </div>
+  </div>
+</section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="track">
+    <span>Segnali operativi</span><span>Formazione</span><span>Software di trading</span><span>Trading manuale</span><span>Trading automatico</span><span>Gestione del rischio</span><span>Community</span>
+    <span>Segnali operativi</span><span>Formazione</span><span>Software di trading</span><span>Trading manuale</span><span>Trading automatico</span><span>Gestione del rischio</span><span>Community</span>
+  </div>
+</div>
+
+<!-- COSA TROVI -->
+<section id="cosa">
+  <div class="wrap">
+    <div class="rv">
+      <span class="eyebrow">Cosa trovi nel canale</span>
+      <h2>Tre strumenti, un solo canale.</h2>
+      <p class="lead">Che tu voglia seguire le operazioni, imparare a farle da solo o automatizzarle, nel canale trovi tutto quello che serve.</p>
+    </div>
+    <div class="grid3">
+      <div class="feat rv"><span class="num">01</span>
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></div>
+        <h3>Segnali</h3>
+        <p>Le operazioni condivise direttamente nel canale, così puoi vedere come lavoro e decidere tu se e come seguirle.</p>
+      </div>
+      <div class="feat rv"><span class="num">02</span>
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7l10-4 10 4-10 4z"/><path d="M6 9.5V15c0 1.5 3 3 6 3s6-1.5 6-3V9.5"/></svg></div>
+        <h3>Formazione</h3>
+        <p>Guide e contenuti per capire il perché di ogni operazione: dalle basi alla gestione del rischio, per diventare indipendente.</p>
+      </div>
+      <div class="feat rv"><span class="num">03</span>
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4M9 12h.01M15 12h.01M9 16h6"/></svg></div>
+        <h3>Software di trading</h3>
+        <p>Gli strumenti di trading automatico che uso, per chi vuole un'operatività più sistematica e meno legata allo schermo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHI SONO -->
+<section class="about">
+  <div class="wrap">
+    <div class="photo rv">
+      <img src="/img/luigi.jpg" alt="Luigi Marino">
+      <div class="tag"><b>8+ anni</b> sui mercati</div>
+    </div>
+    <div class="rv">
+      <span class="eyebrow">Chi sono</span>
+      <h2>Sono Luigi Marino, <span class="gold">“Il Matador”.</span></h2>
+      <p class="lead">Faccio trading da più di 8 anni e lavoro sia in modo manuale sia con sistemi automatici. Nel canale condivido il mio modo di operare, senza filtri: le operazioni che vanno bene e quelle che vanno male.</p>
+      <ul class="checks">
+        <li><svg><use href="#ck"/></svg><span><b>Trading manuale:</b> lettura del mercato e gestione delle posizioni in prima persona.</span></li>
+        <li><svg><use href="#ck"/></svg><span><b>Trading automatico:</b> software e sistemi per operare in modo disciplinato.</span></li>
+        <li><svg><use href="#ck"/></svg><span><b>Una community vera:</b> oltre 41.000 persone, e membri che ci mettono la faccia.</span></li>
+      </ul>
+      <a class="btn js-tg" href="#"><svg><use href="#tg"/></svg>Entra nel canale</a>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO RECENSIONI -->
+<section id="recensioni">
+  <div class="wrap">
+    <div class="rv">
+      <span class="eyebrow">Video recensioni</span>
+      <h2>Non fidarti di me. <span class="gold">Ascolta loro.</span></h2>
+      <p class="lead">Membri del canale che raccontano la loro esperienza, con il proprio volto. Tocca un video per avviarlo.</p>
+    </div>
+    <div class="vids">
+      <div class="vid rv"><video src="/video/rec1.mp4" poster="/video/rec1.jpg" preload="none" playsinline></video><div class="play"><span><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
+      <div class="vid rv"><video src="/video/rec2.mp4" poster="/video/rec2.jpg" preload="none" playsinline></video><div class="play"><span><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
+      <div class="vid rv"><video src="/video/rec3.mp4" poster="/video/rec3.jpg" preload="none" playsinline></video><div class="play"><span><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
+      <div class="vid rv"><video src="/video/rec4.mp4" poster="/video/rec4.jpg" preload="none" playsinline></video><div class="play"><span><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
+      <div class="vid rv"><video src="/video/rec5.mp4" poster="/video/rec5.jpg" preload="none" playsinline></video><div class="play"><span><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
+      <div class="vid rv"><video src="/video/rec6.mp4" poster="/video/rec6.jpg" preload="none" playsinline></video><div class="play"><span><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
+      <div class="vid rv"><video src="/video/rec7.mp4" poster="/video/rec7.jpg" preload="none" playsinline></video><div class="play"><span><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
+      <div class="vid rv"><video src="/video/rec8.mp4" poster="/video/rec8.jpg" preload="none" playsinline></video><div class="play"><span><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span></div><div class="lbl">Membro del canale</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- RISULTATI -->
+<section class="results" id="risultati">
+  <div class="wrap">
+    <div class="rv">
+      <span class="eyebrow">Dalla chat con i membri</span>
+      <h2>Lo storico, <span class="gold">non solo i trade vincenti.</span></h2>
+      <p class="lead">Screenshot dello storico operazioni che i membri mi hanno inviato in privato. Trovi anche le operazioni in perdita, perché fanno parte del trading.</p>
+    </div>
+    <div class="shots">
+      <figure class="shot"><img src="/img/r3.jpg" alt="Storico operazioni di un membro" loading="lazy"><figcaption>Storico di un membro · ottobre</figcaption></figure>
+      <figure class="shot"><img src="/img/r2.jpg" alt="Storico operazioni di un membro" loading="lazy"><figcaption>Membro VIP · ottobre</figcaption></figure>
+      <figure class="shot"><img src="/img/r6.jpg" alt="Storico operazioni di un membro" loading="lazy"><figcaption>Storico di un membro · agosto</figcaption></figure>
+      <figure class="shot"><img src="/img/r5.jpg" alt="Storico operazioni di un membro" loading="lazy"><figcaption>Storico di un membro · agosto</figcaption></figure>
+      <figure class="shot"><img src="/img/r4.jpg" alt="Storico operazioni di un membro" loading="lazy"><figcaption>Storico di un membro · agosto</figcaption></figure>
+      <figure class="shot"><img src="/img/r1.jpg" alt="Storico operazioni di un membro" loading="lazy"><figcaption>Storico di un membro · ottobre</figcaption></figure>
+    </div>
+    <p class="hint">← Scorri per vederne altri · tocca per ingrandire</p>
+  </div>
+</section>
+
+<!-- COME ENTRARE -->
+<section>
+  <div class="wrap">
+    <div class="rv">
+      <span class="eyebrow">Come entrare</span>
+      <h2>Ci vogliono 10 secondi.</h2>
+    </div>
+    <div class="steps">
+      <div class="step rv"><h3>Tocca il pulsante</h3><p>Premi “Entra gratis nel canale” qui sotto.</p></div>
+      <div class="step rv"><h3>Si apre Telegram</h3><p>Se non hai l'app, scaricala gratis da App Store o Google Play e riprova.</p></div>
+      <div class="step rv"><h3>Premi “Unisciti”</h3><p>Sei dentro. In alto trovi le guide e le domande più frequenti.</p></div>
+    </div>
+    <div style="text-align:center;margin-top:40px" class="rv">
+      <a class="btn big js-tg" href="#"><svg><use href="#tg"/></svg>Entra gratis nel canale</a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="rv" style="text-align:center">
+      <span class="eyebrow">Domande frequenti</span>
+      <h2>Prima di entrare</h2>
+    </div>
+    <div class="faq rv">
+      <details><summary>Il canale è gratuito?</summary><p>Sì, entrare nel canale Telegram è gratuito e puoi uscire in qualsiasi momento.</p></details>
+      <details><summary>Devo avere esperienza?</summary><p>No. Nel canale trovi sia contenuti per chi parte da zero sia operatività per chi fa già trading.</p></details>
+      <details><summary>Cosa trovo esattamente?</summary><p>Segnali operativi, formazione e informazioni sui software di trading automatico che utilizzo.</p></details>
+      <details><summary>Mi serve Telegram?</summary><p>Sì, il canale è su Telegram. L'app è gratuita per iPhone, Android e computer.</p></details>
+      <details><summary>I guadagni sono garantiti?</summary><p>No. Nessuno può garantire guadagni nel trading. Ogni operazione comporta un rischio e devi investire solo denaro che puoi permetterti di perdere.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final">
+  <div class="wrap">
+    <div class="box rv">
+      <span class="eyebrow">Unisciti a oltre 41.000 trader</span>
+      <h2>Guarda come lavoro, <span class="gold">poi decidi tu.</span></h2>
+      <p class="lead">Entra nel canale, segui le operazioni per qualche giorno e valuta con i tuoi occhi.</p>
+      <a class="btn big js-tg" href="#"><svg><use href="#tg"/></svg>Entra gratis nel canale</a>
+      <div class="btn-note"><span>Gratuito</span><span>Nessuna registrazione</span><span>Esci quando vuoi</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><b>Avvertenza sul rischio.</b> Il trading su strumenti finanziari, in particolare su CFD, forex e materie prime con leva, comporta un elevato rischio di perdita del capitale e non è adatto a tutti gli investitori. Una parte significativa dei conti retail perde denaro. Investi solo denaro che puoi permetterti di perdere.</p>
+    <p>I contenuti del canale hanno scopo informativo e formativo e non costituiscono consulenza finanziaria personalizzata né sollecitazione all'investimento. I risultati passati, propri o dei membri, non sono indicativi di risultati futuri. Le testimonianze riflettono esperienze individuali e non sono rappresentative di tutti gli utenti.</p>
+    <p>Matador Fx - Copyright</p>
+  </div>
+</footer>
+
+<div class="sticky" id="sticky"><a class="btn js-tg" href="#"><svg><use href="#tg"/></svg>Entra gratis nel canale</a></div>
+<div class="lb" id="lb"><img alt=""></div>
+<div class="toast" id="toast" role="alert"></div>
+
+<script>
+(function(){
+
+  var nav = document.getElementById('nav'), sticky = document.getElementById('sticky');
+  function onScroll(){
+    var y = window.scrollY;
+    nav.classList.toggle('solid', y > 20);
+    sticky.classList.toggle('show', y > 520);
+  }
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:.12, rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  } else { document.querySelectorAll('.rv').forEach(function(el){ el.classList.add('in'); }); }
+
+  var vids = document.querySelectorAll('.vid');
+  vids.forEach(function(box){
+    var v = box.querySelector('video');
+    box.addEventListener('click', function(){
+      if (v.paused){
+        vids.forEach(function(o){ var ov=o.querySelector('video'); if(ov!==v && !ov.paused){ ov.pause(); } });
+        v.play(); box.classList.add('playing'); v.setAttribute('controls','');
+      }
+    });
+    v.addEventListener('pause', function(){ box.classList.remove('playing'); v.removeAttribute('controls'); });
+    v.addEventListener('ended', function(){ box.classList.remove('playing'); v.removeAttribute('controls'); });
+  });
+
+  var lb = document.getElementById('lb'), lbi = lb.querySelector('img');
+  document.querySelectorAll('.shot img').forEach(function(img){
+    img.addEventListener('click', function(){ lbi.src = img.src; lb.classList.add('open'); });
+  });
+  lb.addEventListener('click', function(){ lb.classList.remove('open'); });
+})();
+</script>
+<script>
+  // Meta Pixel e Clarity: ID ed evento sul clic arrivano dal server (variabili su Netlify).
+  let clickEvent = "";
+  fetch("/api/config")
+    .then((r) => r.json())
+    .then((config) => {
+      const { pixelId } = config;
+      clickEvent = config.clickEvent || "";
+      if (/^[a-z0-9]{6,20}$/i.test(config.clarityId || "")) {
+        (function(c,l,a,r,i,t,y){
+          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", config.clarityId);
+        clarity("set", "landing", document.documentElement.dataset.landing || "");
+      }
+      if (!pixelId) return;
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+      document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq("init", pixelId);
+      // Optional second pixel (EXTRA_PIXEL_ID): receives PageView and the click event from the browser.
+      if (/^\d{10,20}$/.test(config.extraPixelId || "")) fbq("init", config.extraPixelId);
+      fbq("track", "PageView");
+    })
+    .catch(() => {});
+
+  const toast = document.getElementById("toast");
+  const cookie = (name) =>
+    document.cookie.split("; ").find((c) => c.startsWith(name + "="))?.split("=")[1] ?? "";
+  // One tap at a time; the button text never changes.
+  let busy = false;
+
+  // Every "Entra" button: creates the personal invite link, tracks the click, opens t.me.
+  document.querySelectorAll(".js-tg").forEach((button) => {
+    button.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (busy) return;
+      busy = true;
+      toast.classList.remove("show");
+      try {
+        // Same id in the browser and on the server, so Meta counts the click event once.
+        const eventId = "click-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+        if (clickEvent && window.fbq) fbq("track", clickEvent, {}, { eventID: eventId });
+        const fbclid = new URLSearchParams(location.search).get("fbclid");
+        const res = await fetch("/api/join", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            event_id: eventId,
+            url: location.href,
+            fbp: cookie("_fbp"),
+            fbc: cookie("_fbc") || (fbclid ? `fb.1.${Date.now()}.${fbclid}` : ""),
+          }),
+        });
+        const data = await res.json();
+        if (!data.link) throw new Error("no link");
+        // Normal Telegram link (t.me), no direct app opening.
+        location.href = data.link;
+        // If the visitor comes back to this page, the buttons work again.
+        setTimeout(() => { busy = false; }, 3000);
+      } catch {
+        toast.textContent = "Qualcosa non ha funzionato. Riprova tra qualche secondo.";
+        toast.classList.add("show");
+        busy = false;
+      }
+    });
+  });
+</script>
+</body>
+</html>
