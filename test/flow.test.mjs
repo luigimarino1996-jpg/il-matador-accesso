@@ -178,3 +178,22 @@ test("CLICK_EVENT_NAME sends an event on the button click with the browser's id"
   await post("/api/join", { fbp: "fb.1.9.9" });
   assert.equal(metaCalls().length, 0);
 });
+
+test("EXTRA_PIXEL_ID + EXTRA_ACCESS_TOKEN: server events go to both pixels with the same id", async () => {
+  process.env.CLICK_EVENT_NAME = "Lead";
+  process.env.EXTRA_PIXEL_ID = "1446956473565497";
+  process.env.EXTRA_ACCESS_TOKEN = "EXTRA";
+  calls.length = 0;
+  await post("/api/join", { fbp: "fb.1.2.3", event_id: "click-xyz12345" });
+  const name = calls.find((c) => c.url.includes("createChatInviteLink")).body.name;
+  await hook({ chat_join_request: { chat: { id: -100123, type: "channel" }, from: { id: 77 }, date: 1794000900,
+    invite_link: { name, invite_link: "https://t.me/+abc" } } });
+  for (const k of ["CLICK_EVENT_NAME", "EXTRA_PIXEL_ID", "EXTRA_ACCESS_TOKEN"]) delete process.env[k];
+  const sent = metaCalls().map((c) => [c.url.includes("/1446956473565497/") ? "extra" : "main", c.body.data[0].event_name, c.body.data[0].event_id]);
+  const lead = sent.filter((x) => x[1] === "Lead");
+  const sub = sent.filter((x) => x[1] === "Subscribe");
+  assert.deepEqual(lead.map((x) => x[0]).sort(), ["extra", "main"]);
+  assert.equal(lead[0][2], lead[1][2]);
+  assert.deepEqual(sub.map((x) => x[0]).sort(), ["extra", "main"]);
+  assert.ok(metaCalls().some((c) => c.url.includes("access_token=EXTRA")));
+});

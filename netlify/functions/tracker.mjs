@@ -237,18 +237,26 @@ async function sendMetaEvent({ eventName, eventId, eventTime, click, externalId,
   };
   if (env("META_TEST_EVENT_CODE")) body.test_event_code = env("META_TEST_EVENT_CODE");
 
+  // Main pixel, plus the second pixel when EXTRA_PIXEL_ID and EXTRA_ACCESS_TOKEN are set.
+  const targets = [{ pixel: env("META_PIXEL_ID"), token: env("META_ACCESS_TOKEN"), main: true }];
+  if (/^\d{10,20}$/.test(env("EXTRA_PIXEL_ID")) && env("EXTRA_ACCESS_TOKEN")) {
+    targets.push({ pixel: env("EXTRA_PIXEL_ID"), token: env("EXTRA_ACCESS_TOKEN"), main: false });
+  }
+  const results = await Promise.allSettled(targets.map((t) => postToMeta(t, body, eventName, label)));
+  // Only a failure on the main pixel is an error; the second pixel is best effort (logged).
+  if (results[0].status === "rejected") throw results[0].reason;
+}
+
+async function postToMeta({ pixel, token }, body, eventName, label) {
   const version = env("META_API_VERSION") || "v24.0";
   const res = await fetch(
-    `https://graph.facebook.com/${version}/${env("META_PIXEL_ID")}/events?access_token=${encodeURIComponent(env("META_ACCESS_TOKEN"))}`,
+    `https://graph.facebook.com/${version}/${pixel}/events?access_token=${encodeURIComponent(token)}`,
     { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) },
   );
-  const result = await res.clone().json().catch(() => ({}));
-  log(`Meta ${eventName} per ${label}: HTTP ${res.status}`,
+  const result = await res.json().catch(() => ({}));
+  log(`Meta ${eventName} per ${label} (pixel ${pixel}): HTTP ${res.status}`,
     JSON.stringify({ events_received: result.events_received, fbtrace_id: result.fbtrace_id, error: result.error?.message }));
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    throw new Error(`Meta: ${data.error?.message ?? res.status}`);
-  }
+  if (!res.ok) throw new Error(`Meta ${pixel}: ${result.error?.message ?? res.status}`);
 }
 
 // ── /api/setup ── open in the browser: connects the bot and tells you what is missing
