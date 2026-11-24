@@ -8,6 +8,13 @@ const db = () => getStore({ name: "tracker", consistency: "strong" });
 const sha256 = (value) => createHash("sha256").update(String(value)).digest("hex");
 // Derived from the bot token, so there is no extra secret to configure.
 const webhookSecret = () => sha256(`webhook:${env("TELEGRAM_BOT_TOKEN")}`);
+// Extra pixels: EXTRA_PIXEL_ID and EXTRA_ACCESS_TOKEN hold comma-separated lists, paired by position.
+const extraPixels = () => {
+  const tokens = env("EXTRA_ACCESS_TOKEN").split(",").map((t) => t.trim());
+  return env("EXTRA_PIXEL_ID").split(",").map((id) => id.trim())
+    .map((id, i) => ({ pixel: id, token: tokens[i] || "" }))
+    .filter((p) => /^\d{10,20}$/.test(p.pixel));
+};
 const clean = (value, max = 300) => (typeof value === "string" ? value.slice(0, max) : "");
 
 const json = (data, status = 200) =>
@@ -26,7 +33,7 @@ export default async (req, context) => {
       clickEvent: env("CLICK_EVENT_NAME"),
       clarityId: env("CLARITY_ID"),
       // Second pixel, browser only: gets PageView and the click event, not Subscribe.
-      extraPixelId: env("EXTRA_PIXEL_ID"),
+      extraPixelIds: extraPixels().map((p) => p.pixel),
     });
   }
   if (pathname === "/api/telegram") return telegram(req);
@@ -237,13 +244,11 @@ async function sendMetaEvent({ eventName, eventId, eventTime, click, externalId,
   };
   if (env("META_TEST_EVENT_CODE")) body.test_event_code = env("META_TEST_EVENT_CODE");
 
-  // Main pixel, plus the second pixel when EXTRA_PIXEL_ID and EXTRA_ACCESS_TOKEN are set.
-  const targets = [{ pixel: env("META_PIXEL_ID"), token: env("META_ACCESS_TOKEN"), main: true }];
-  if (/^\d{10,20}$/.test(env("EXTRA_PIXEL_ID")) && env("EXTRA_ACCESS_TOKEN")) {
-    targets.push({ pixel: env("EXTRA_PIXEL_ID"), token: env("EXTRA_ACCESS_TOKEN"), main: false });
-  }
+  // Main pixel, plus every extra pixel that has its own token.
+  const targets = [{ pixel: env("META_PIXEL_ID"), token: env("META_ACCESS_TOKEN") }];
+  for (const extra of extraPixels()) if (extra.token) targets.push(extra);
   const results = await Promise.allSettled(targets.map((t) => postToMeta(t, body, eventName, label)));
-  // Only a failure on the main pixel is an error; the second pixel is best effort (logged).
+  // Only a failure on the main pixel is an error; extra pixels are best effort (logged).
   if (results[0].status === "rejected") throw results[0].reason;
 }
 

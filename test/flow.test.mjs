@@ -162,7 +162,7 @@ test("CLICK_EVENT_NAME sends an event on the button click with the browser's id"
   const config = await (await handler(new Request("https://site.test/api/config"))).json();
   assert.equal(config.clickEvent, "Lead");
   assert.equal(config.clarityId, "");
-  assert.equal(config.extraPixelId, "");
+  assert.deepEqual(config.extraPixelIds, []);
   calls.length = 0;
   await post("/api/join", { fbp: "fb.1.9.9", event_id: "click-abc123xyz" });
   delete process.env.CLICK_EVENT_NAME;
@@ -181,19 +181,22 @@ test("CLICK_EVENT_NAME sends an event on the button click with the browser's id"
 
 test("EXTRA_PIXEL_ID + EXTRA_ACCESS_TOKEN: server events go to both pixels with the same id", async () => {
   process.env.CLICK_EVENT_NAME = "Lead";
-  process.env.EXTRA_PIXEL_ID = "1446956473565497";
-  process.env.EXTRA_ACCESS_TOKEN = "EXTRA";
+  process.env.EXTRA_PIXEL_ID = "1446956473565497, 1714879203539607";
+  process.env.EXTRA_ACCESS_TOKEN = "EXTRA,EXTRA2";
+  const cfg = await (await handler(new Request("https://site.test/api/config"))).json();
+  assert.deepEqual(cfg.extraPixelIds, ["1446956473565497", "1714879203539607"]);
   calls.length = 0;
   await post("/api/join", { fbp: "fb.1.2.3", event_id: "click-xyz12345" });
   const name = calls.find((c) => c.url.includes("createChatInviteLink")).body.name;
   await hook({ chat_join_request: { chat: { id: -100123, type: "channel" }, from: { id: 77 }, date: 1794000900,
     invite_link: { name, invite_link: "https://t.me/+abc" } } });
   for (const k of ["CLICK_EVENT_NAME", "EXTRA_PIXEL_ID", "EXTRA_ACCESS_TOKEN"]) delete process.env[k];
-  const sent = metaCalls().map((c) => [c.url.includes("/1446956473565497/") ? "extra" : "main", c.body.data[0].event_name, c.body.data[0].event_id]);
+  const who = (c) => c.url.includes("/1446956473565497/") ? "extra1" : c.url.includes("/1714879203539607/") ? "extra2" : "main";
+  const sent = metaCalls().map((c) => [who(c), c.body.data[0].event_name, c.body.data[0].event_id]);
   const lead = sent.filter((x) => x[1] === "Lead");
   const sub = sent.filter((x) => x[1] === "Subscribe");
-  assert.deepEqual(lead.map((x) => x[0]).sort(), ["extra", "main"]);
-  assert.equal(lead[0][2], lead[1][2]);
-  assert.deepEqual(sub.map((x) => x[0]).sort(), ["extra", "main"]);
-  assert.ok(metaCalls().some((c) => c.url.includes("access_token=EXTRA")));
+  assert.deepEqual(lead.map((x) => x[0]).sort(), ["extra1", "extra2", "main"]);
+  assert.equal(new Set(lead.map((x) => x[2])).size, 1);
+  assert.deepEqual(sub.map((x) => x[0]).sort(), ["extra1", "extra2", "main"]);
+  assert.ok(metaCalls().some((c) => c.url.includes("/1714879203539607/") && c.url.includes("access_token=EXTRA2")));
 });
