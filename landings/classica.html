@@ -77,6 +77,7 @@
     <p class="error" id="error" role="alert"></p>
   </main>
 
+<script src="/tg-join.js"></script>
 <script>
   // Meta Pixel: ID ed evento sul clic arrivano dal server (variabili su Netlify).
   let clickEvent = "";
@@ -107,43 +108,12 @@
     })
     .catch(() => {});
 
-  const button = document.getElementById("join");
+  // Buttons: Telegram opens in a new page (see /tg-join.js).
   const error = document.getElementById("error");
-  const cookie = (name) =>
-    document.cookie.split("; ").find((c) => c.startsWith(name + "="))?.split("=")[1] ?? "";
-
-  // One tap at a time; the button text never changes.
-  let busy = false;
-
-  button.addEventListener("click", async () => {
-    if (busy) return;
-    busy = true;
-    error.textContent = "";
-    try {
-      // Same id in the browser and on the server, so Meta counts the click event once.
-      const eventId = "click-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
-      if (clickEvent && window.fbq) fbq("track", clickEvent, {}, { eventID: eventId });
-      const fbclid = new URLSearchParams(location.search).get("fbclid");
-      const res = await fetch("/api/join", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          event_id: eventId,
-          url: location.href,
-          fbp: cookie("_fbp"),
-          fbc: cookie("_fbc") || (fbclid ? `fb.1.${Date.now()}.${fbclid}` : ""),
-        }),
-      });
-      const data = await res.json();
-      if (!data.link) throw new Error("no link");
-      // Normal Telegram link (t.me), no direct app opening.
-      location.href = data.link;
-      // If the visitor comes back to this page, the button works again.
-      setTimeout(() => { busy = false; }, 3000);
-    } catch {
-      error.textContent = "Qualcosa non ha funzionato. Riprova tra qualche secondo.";
-      busy = false;
-    }
+  TGJoin.init({
+    buttons: [document.getElementById("join")],
+    getClickEvent: () => clickEvent,
+    onError: () => { error.textContent = "Qualcosa non ha funzionato. Riprova tra qualche secondo."; },
   });
 </script>
 </body>

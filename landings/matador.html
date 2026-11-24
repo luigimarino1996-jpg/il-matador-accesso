@@ -41,7 +41,7 @@ h2{font-size:clamp(28px,4.6vw,44px);margin:14px 0 14px}
 /* Buttons */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;background:var(--tg);color:#fff;font-weight:700;font-size:17px;padding:18px 28px;border-radius:14px;text-decoration:none;border:0;cursor:pointer;box-shadow:0 10px 30px -8px rgba(42,171,238,.55);transition:transform .15s ease,box-shadow .2s ease;font-family:Inter,sans-serif}
 .btn:hover{transform:translateY(-2px);box-shadow:0 16px 40px -10px rgba(42,171,238,.7)}
-.btn:active{transform:translateY(0)}
+.btn:active{transform:scale(.97)}
 .btn svg{width:22px;height:22px;flex:none}
 .btn.big{font-size:18px;padding:20px 34px}
 .btn-note{font-size:13px;color:var(--muted);margin-top:12px;display:flex;gap:16px;flex-wrap:wrap}
@@ -439,6 +439,7 @@ footer p+p{margin-top:10px}
   lb.addEventListener('click', function(){ lb.classList.remove('open'); });
 })();
 </script>
+<script src="/tg-join.js"></script>
 <script>
   // Meta Pixel e Clarity: ID ed evento sul clic arrivano dal server (variabili su Netlify).
   let clickEvent = "";
@@ -468,46 +469,16 @@ footer p+p{margin-top:10px}
     })
     .catch(() => {});
 
+  // Every "Entra" button: Telegram opens in a new page (see /tg-join.js).
   const toast = document.getElementById("toast");
-  const cookie = (name) =>
-    document.cookie.split("; ").find((c) => c.startsWith(name + "="))?.split("=")[1] ?? "";
-  // One tap at a time; the button text never changes.
-  let busy = false;
-
-  // Every "Entra" button: creates the personal invite link, tracks the click, opens t.me.
-  document.querySelectorAll(".js-tg").forEach((button) => {
-    button.addEventListener("click", async (e) => {
-      e.preventDefault();
-      if (busy) return;
-      busy = true;
-      toast.classList.remove("show");
-      try {
-        // Same id in the browser and on the server, so Meta counts the click event once.
-        const eventId = "click-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
-        if (clickEvent && window.fbq) fbq("track", clickEvent, {}, { eventID: eventId });
-        const fbclid = new URLSearchParams(location.search).get("fbclid");
-        const res = await fetch("/api/join", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            event_id: eventId,
-            url: location.href,
-            fbp: cookie("_fbp"),
-            fbc: cookie("_fbc") || (fbclid ? `fb.1.${Date.now()}.${fbclid}` : ""),
-          }),
-        });
-        const data = await res.json();
-        if (!data.link) throw new Error("no link");
-        // Normal Telegram link (t.me), no direct app opening.
-        location.href = data.link;
-        // If the visitor comes back to this page, the buttons work again.
-        setTimeout(() => { busy = false; }, 3000);
-      } catch {
-        toast.textContent = "Qualcosa non ha funzionato. Riprova tra qualche secondo.";
-        toast.classList.add("show");
-        busy = false;
-      }
-    });
+  TGJoin.init({
+    buttons: document.querySelectorAll(".js-tg"),
+    getClickEvent: () => clickEvent,
+    onError: () => {
+      toast.textContent = "Qualcosa non ha funzionato. Riprova tra qualche secondo.";
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 4000);
+    },
   });
 </script>
 </body>
