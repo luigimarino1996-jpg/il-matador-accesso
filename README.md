@@ -24,6 +24,10 @@ riceve un evento `Subscribe` (Conversions API). Nient'altro.
 7. **Landing**: è già collegata. Pulsante e Meta Pixel funzionano da soli.
 8. **Annuncio**: in Meta scegli `Subscribe` come evento di conversione.
 
+## Link diretto per le inserzioni
+
+`https://SITO/vai` porta chiunque direttamente su Telegram con un link personale, senza pagina. Lead parte dal server al clic, Subscribe all'ingresso come sempre.
+
 ## Test
 
 Imposta la variabile `META_TEST_EVENT_CODE` con il codice della scheda "Eventi

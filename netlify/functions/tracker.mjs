@@ -1,7 +1,7 @@
 import { getStore } from "@netlify/blobs";
 import { createHash, randomBytes } from "node:crypto";
 
-export const config = { path: ["/api/join", "/api/telegram", "/api/setup", "/api/config"] };
+export const config = { path: ["/api/join", "/api/telegram", "/api/setup", "/api/config", "/vai"] };
 
 const env = (key) => process.env[key] ?? "";
 const db = () => getStore({ name: "tracker", consistency: "strong" });
@@ -26,6 +26,7 @@ const json = (data, status = 200) =>
 export default async (req, context) => {
   const { pathname } = new URL(req.url);
   if (pathname === "/api/join") return join(req, context);
+  if (pathname === "/vai") return direct(req, context);
   // The Pixel ID is public by nature; the access token never leaves the server.
   if (pathname === "/api/config") {
     return json({
@@ -102,6 +103,56 @@ async function join(req, context) {
     else await sending;
   }
   return json({ link: invite.invite_link });
+}
+
+// ── /vai ── direct link for ads: no page, the visitor goes straight to Telegram with a
+// personal invite link. Same behaviour for every visitor; the click event is sent from
+// the server (there is no browser pixel on this route).
+async function direct(req, context) {
+  const back = new URL("/", req.url).toString();
+  const redirect = (to) =>
+    new Response(null, { status: 302, headers: { location: to, "cache-control": "no-store" } });
+
+  const channel = await getChannel();
+  if (!channel) return redirect(back);
+
+  const url = new URL(req.url);
+  const fbclid = clean(url.searchParams.get("fbclid") ?? "", 500);
+  const clickId = randomBytes(12).toString("hex");
+  const click = {
+    ts: new Date().toISOString(),
+    url: clean(req.url, 1000),
+    fbp: "",
+    fbc: fbclid ? `fb.1.${Date.now()}.${fbclid}` : "",
+    ip: context?.ip ?? "",
+    ua: clean(req.headers.get("user-agent") ?? "", 500),
+    direct: true,
+  };
+
+  let invite;
+  try {
+    [invite] = await Promise.all([
+      tg("createChatInviteLink", {
+        chat_id: channel.id,
+        name: clickId,
+        creates_join_request: true,
+        expire_date: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60,
+      }),
+      db().setJSON(`click/${clickId}`, click),
+    ]);
+  } catch (err) {
+    console.error(err);
+    return redirect(back); // something went wrong: show the landing instead of an error
+  }
+
+  const clickEvent = env("CLICK_EVENT_NAME");
+  if (clickEvent) {
+    const sending = sendMetaEvent({ eventName: clickEvent, eventId: `click-${clickId}`, click, label: `link diretto ${clickId}` })
+      .catch((err) => console.error(err));
+    if (context?.waitUntil) context.waitUntil(sending);
+    else await sending;
+  }
+  return redirect(invite.invite_link);
 }
 
 // ── /api/telegram ── webhook: when someone joins, send Subscribe to Meta

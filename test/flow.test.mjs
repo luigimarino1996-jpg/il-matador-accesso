@@ -200,3 +200,21 @@ test("EXTRA_PIXEL_ID + EXTRA_ACCESS_TOKEN: server events go to both pixels with 
   assert.deepEqual(sub.map((x) => x[0]).sort(), ["extra1", "extra2", "main"]);
   assert.ok(metaCalls().some((c) => c.url.includes("/1714879203539607/") && c.url.includes("access_token=EXTRA2")));
 });
+
+test("/vai: direct link redirects to a personal invite and tracks the ad click", async () => {
+  process.env.CLICK_EVENT_NAME = "Lead";
+  calls.length = 0;
+  const res = await handler(new Request("https://site.test/vai?fbclid=AbC123", { headers: { "user-agent": "UA" } }), { ip: "5.6.7.8" });
+  delete process.env.CLICK_EVENT_NAME;
+  assert.equal(res.status, 302);
+  assert.equal(res.headers.get("location"), "https://t.me/+abc");
+  const invite = calls.find((c) => c.url.includes("createChatInviteLink")).body;
+  assert.equal(invite.creates_join_request, true);
+  const ev = metaCalls()[0].body.data[0];
+  assert.equal(ev.event_name, "Lead");
+  assert.match(ev.user_data.fbc, /^fb\.1\.\d+\.AbC123$/);
+  assert.equal(ev.user_data.client_ip_address, "5.6.7.8");
+  // The join through that link is then tracked like any other.
+  const stored = data.get(`click/${invite.name}`);
+  assert.equal(stored.direct, true);
+});
