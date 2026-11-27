@@ -26,7 +26,7 @@ riceve un evento `Subscribe` (Conversions API). Nient'altro.
 
 ## Link diretto per le inserzioni
 
-`https://SITO/vai` porta chiunque direttamente su Telegram con un link personale, senza pagina. Lead parte dal server al clic, Subscribe all'ingresso come sempre.
+`https://SITO/vai` porta chiunque direttamente su Telegram con un link personale, senza pagina. Lead parte dal server al clic, Subscribe all'ingresso come sempre. Con `VAI_SOLO_PAESE=IT` solo chi è in Italia va diretto su Telegram, gli altri vedono la landing.
 
 ## Test
 

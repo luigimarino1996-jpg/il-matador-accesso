@@ -105,18 +105,25 @@ async function join(req, context) {
   return json({ link: invite.invite_link });
 }
 
-// ── /vai ── direct link for ads: no page, the visitor goes straight to Telegram with a
-// personal invite link. Same behaviour for every visitor; the click event is sent from
-// the server (there is no browser pixel on this route).
+// ── /vai ── direct link: no page, the visitor goes straight to Telegram with a personal
+// invite link; the click event is sent from the server (no browser pixel on this route).
+// VAI_SOLO_PAESE (e.g. "IT" or "IT,SM"): only visitors from those countries go direct,
+// everyone else is sent to the landing ("/", query string kept).
 async function direct(req, context) {
-  const back = new URL("/", req.url).toString();
+  const url = new URL(req.url);
+  const back = new URL("/" + url.search, req.url).toString();
   const redirect = (to) =>
     new Response(null, { status: 302, headers: { location: to, "cache-control": "no-store" } });
+
+  const countries = env("VAI_SOLO_PAESE").toUpperCase().split(",").map((c) => c.trim()).filter(Boolean);
+  if (countries.length) {
+    const country = (context?.geo?.country?.code ?? "").toUpperCase();
+    if (!countries.includes(country)) return redirect(back);
+  }
 
   const channel = await getChannel();
   if (!channel) return redirect(back);
 
-  const url = new URL(req.url);
   const fbclid = clean(url.searchParams.get("fbclid") ?? "", 500);
   const clickId = randomBytes(12).toString("hex");
   const click = {

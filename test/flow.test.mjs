@@ -218,3 +218,15 @@ test("/vai: direct link redirects to a personal invite and tracks the ad click",
   const stored = data.get(`click/${invite.name}`);
   assert.equal(stored.direct, true);
 });
+
+test("/vai with VAI_SOLO_PAESE: Italy goes direct, other countries go to the landing", async () => {
+  process.env.VAI_SOLO_PAESE = "IT";
+  calls.length = 0;
+  const abroad = await handler(new Request("https://site.test/vai?fbclid=X1&utm_source=fb"), { ip: "1.1.1.1", geo: { country: { code: "AE" } } });
+  assert.equal(abroad.status, 302);
+  assert.equal(abroad.headers.get("location"), "https://site.test/?fbclid=X1&utm_source=fb");
+  assert.equal(calls.length, 0);
+  const italy = await handler(new Request("https://site.test/vai?fbclid=X2"), { ip: "2.2.2.2", geo: { country: { code: "IT" } } });
+  assert.equal(italy.headers.get("location"), "https://t.me/+abc");
+  delete process.env.VAI_SOLO_PAESE;
+});
